@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+
 import './App.css';
+import Host from './Pages/Host';
+import EditEvent from './Pages/EditEvent';
+import ReadMe from './Pages/ReadMe';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Success from './Pages/Success';
+import AllEvents from './Pages/AllEvents';
+import EventDetails from './Pages/EventDetails';
+
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+
+
+<Router>
+
+      <Routes>
+
+
+        
+      <Route path="/" element={<Host />} />
+
+      <Route path="/host/form/:planId" element={<Host />} />
+
+      <Route path="/EditEvent" element={<EditEvent />} />
+
+      <Route path="/ReadMe" element={<ReadMe />} />
+
+      <Route path="/success" element={<Success />} />
+
+      <Route path="/all-events" element={<AllEvents />} />
+
+      <Route path="/event-details/:id" element={<EventDetails />} />
+
+      </Routes>
+
+      </Router>
+     
     </div>
   );
 }
