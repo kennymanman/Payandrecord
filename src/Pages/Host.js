@@ -25,6 +25,7 @@ export default function Host() {
   });
   const navigate = useNavigate();
   const { planId } = useParams();  // Get the planId from the URL
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (planId) {
@@ -63,6 +64,8 @@ export default function Host() {
       return;
     }
 
+    setIsLoading(true);  // Set loading to true when payment is successful
+
     const uniqueCode = generateUniqueCode();
     
     try {
@@ -96,10 +99,12 @@ export default function Host() {
 
       console.log('Data inserted successfully:', data);
       await sendEmail(formData.email, uniqueCode);
+      setIsLoading(false);  // Set loading to false before navigating
       navigate('/readme', { state: { uniqueCode, eventName: formData.eventName } });
     } catch (error) {
       console.error('Error in handlePaymentSuccess:', error);
       alert(`Error: ${error.message}`);
+      setIsLoading(false);  // Set loading to false if there's an error
     }
   };
 
@@ -186,6 +191,19 @@ export default function Host() {
     });
     handler.openIframe();
   };
+
+  //For the loading State
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-xl font-semibold">Processing your payment...</p>
+          <p className="mt-2">Please wait while we set up your event.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (selectedPlan) {
     return (
