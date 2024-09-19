@@ -169,20 +169,15 @@ export default function Host() {
 
       console.log(`File uploaded successfully to ${bucket}:`, data);
 
-      const { publicURL, error: urlError } = supabase.storage
+      // Get the public URL
+      const { data: publicUrlData } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
 
-      if (urlError) {
-        console.error(`Error getting public URL for ${bucket}:`, urlError);
-        throw urlError;
-      }
-
-      console.log(`Public URL for ${bucket}:`, publicURL);
-      return publicURL;
+      console.log(`Public URL for ${bucket}:`, publicUrlData.publicUrl);
+      return publicUrlData.publicUrl;
     } catch (error) {
       console.error(`Error in uploadFile for ${bucket}:`, error);
-      // Instead of returning null, throw the error so it can be caught in the calling function
       throw error;
     }
   };
