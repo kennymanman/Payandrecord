@@ -73,9 +73,12 @@ export default function Host() {
       const imageUrl = await uploadFile(formData.image, 'event-images');
       console.log('Uploaded image URL:', imageUrl);
 
-      console.log('Uploading video:', formData.video);
-      const videoUrl = await uploadFile(formData.video, 'event-videos');
-      console.log('Uploaded video URL:', videoUrl);
+      let videoUrl = null;
+      if (selectedPlan > 1) {
+        console.log('Uploading video:', formData.video);
+        videoUrl = await uploadFile(formData.video, 'event-videos');
+        console.log('Uploaded video URL:', videoUrl);
+      }
 
       const eventData = {
         plan_id: selectedPlan,
@@ -103,7 +106,7 @@ export default function Host() {
       navigate('/readme', { state: { uniqueCode, eventName: formData.eventName } });
     } catch (error) {
       console.error('Error in handlePaymentSuccess:', error);
-      alert(`Error: ${error.message}`);
+      alert(`Error: ${error.message}. Please try again or contact support.`);
       setIsLoading(false);  // Set loading to false if there's an error
     }
   };
@@ -165,7 +168,8 @@ export default function Host() {
       return publicURL;
     } catch (error) {
       console.error(`Error in uploadFile for ${bucket}:`, error);
-      return null;
+      // Instead of returning null, throw the error so it can be caught in the calling function
+      throw error;
     }
   };
 
