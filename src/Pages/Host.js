@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js';
 import emailjs from '@emailjs/browser';
+import { Cloudinary } from "@cloudinary/url-gen";
+import axios from 'axios';
 
 // Initialize EmailJS with your user ID
 emailjs.init("RuMFiNq6SrWAWSNiH");
@@ -11,6 +13,12 @@ const supabase = createClient('https://ktlmyeivrfxrochvwqun.supabase.co', 'eyJhb
 
 // Paystack public key
 const paystackPublicKey = 'pk_test_92278ada5a04dc16791879cfae2950afdeacc04e';
+
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: 'df0wwgkql'
+  }
+});
 
 export default function Host() {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -74,10 +82,16 @@ export default function Host() {
       console.log('Uploaded image URL:', imageUrl);
 
       let videoUrl = null;
-      if (selectedPlan > 1) {
-        console.log('Uploading video:', formData.video);
-        videoUrl = await uploadFile(formData.video, 'event-videos');
-        console.log('Uploaded video URL:', videoUrl);
+      if (selectedPlan > 1 && formData.video) {
+        try {
+          console.log('Uploading video:', formData.video);
+          videoUrl = await uploadVideo(formData.video);
+          console.log('Uploaded video URL:', videoUrl);
+        } catch (videoError) {
+          console.error('Error uploading video:', videoError);
+          // Instead of throwing the error, we'll set videoUrl to null and continue
+          videoUrl = null;
+        }
       }
 
       const eventData = {
@@ -173,6 +187,39 @@ export default function Host() {
     }
   };
 
+  const uploadVideo = async (file) => {
+    console.log('File to upload:', file);
+    console.log('File name:', file.name);
+    console.log('File type:', file.type);
+    console.log('File size:', file.size);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'famousone');
+
+    try {
+      console.log('Starting video upload to Cloudinary...');
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/df0wwgkql/video/upload`,
+        {
+          method: 'POST',
+          body: formData
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Upload successful:', data);
+      return data.secure_url;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      throw error;
+    }
+  };
+
   const handlePaymentClick = () => {
     if (!formData.email) {
       alert('Please enter your email address');
@@ -249,23 +296,14 @@ export default function Host() {
             className="w-full p-2 border rounded"
             required
           />
-          {/* <input
+          <input
             type="file"
             name="image"
-            onChange={handleInputChange}
+            onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.files[0] }))}
             accept="image/*"
             className="w-full p-2 border rounded"
             required
-          /> */}
-
-<input
-  type="file"
-  name="image"
-  onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.files[0] }))}
-  accept="image/*"
-  className="w-full p-2 border rounded"
-  required
-/>
+          />
           {selectedPlan > 1 && (
             <>
               <input
