@@ -89,8 +89,13 @@ export default function Host() {
           console.log('Uploaded video URL:', videoUrl);
         } catch (videoError) {
           console.error('Error uploading video:', videoError);
-          // Instead of throwing the error, we'll set videoUrl to null and continue
-          videoUrl = null;
+          if (videoError.message.includes('File size exceeds 100MB limit')) {
+            alert('The video file size exceeds the 100MB limit. Please choose a smaller file.');
+          } else {
+            alert('There was an error uploading the video. Please try again or contact support.');
+          }
+          // You might want to return here or set a flag to prevent further processing
+          return;
         }
       }
 
@@ -187,6 +192,13 @@ export default function Host() {
     console.log('File name:', file.name);
     console.log('File type:', file.type);
     console.log('File size:', file.size);
+
+    // Check if file size exceeds 100MB (100 * 1024 * 1024 bytes)
+    const maxSize = 100 * 1024 * 1024; // 100MB in bytes
+    if (file.size > maxSize) {
+      console.error('File size exceeds 100MB limit');
+      throw new Error('File size exceeds 100MB limit. Please choose a smaller file.');
+    }
 
     const formData = new FormData();
     formData.append('file', file);
@@ -309,6 +321,7 @@ export default function Host() {
                 className="w-full p-2 border rounded"
                 required
               />
+              <p className="text-sm text-gray-500 mt-1">Maximum file size: 100MB</p>
               <input
                 type="number"
                 name="ticketPrice"
