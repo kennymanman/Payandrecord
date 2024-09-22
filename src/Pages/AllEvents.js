@@ -110,9 +110,14 @@ function AllEvents() {
             <p>Date: {new Date(event.event_date).toLocaleDateString()}</p>
             <p>Category: {planNames[event.plan_id]}</p>
             <p>Payment: ₦{event.ticket_price || 'N/A'}</p>
-            <p>Email: {event.email}</p>
-            <p>Phone: {event.phone_number}</p>
-            <p>Last Updated: {new Date(event.updated_at).toLocaleString()}</p>
+            
+            {/* New host information */}
+            <h3 className="font-semibold mt-2">Host Information:</h3>
+            <p>Name: {event.host_name || 'N/A'}</p>
+            <p>Email: {event.host_email || 'N/A'}</p>
+            <p>Phone: {event.host_phone_number || 'N/A'}</p>
+            
+            <p className="mt-2">Last Updated: {new Date(event.updated_at).toLocaleString()}</p>
             
             {event.image_url && (
               <img src={event.image_url} alt={event.event_name} className="mt-2 w-full h-40 object-cover" />
