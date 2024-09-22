@@ -40,10 +40,14 @@ function AllEvents() {
     else setEvents(data);
   }
 
-  const filteredEvents = events.filter(event => 
-    event.event_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (filter === 'all' || event.plan_id.toString() === filter)
-  );
+  const filteredEvents = events.filter(event => {
+    const eventTitle = (event.event_title || '').toLowerCase();
+    const hostName = (event.host_name || '').toLowerCase();
+    const term = searchTerm.toLowerCase();
+    
+    return (eventTitle.includes(term) || hostName.includes(term)) &&
+      (filter === 'all' || event.plan_id?.toString() === filter);
+  });
 
   const planNames = {
     '1': 'Basic',
@@ -85,7 +89,7 @@ function AllEvents() {
       <div className="mb-4 flex space-x-4">
         <input
           type="text"
-          placeholder="Search events..."
+          placeholder="Search events by title or host name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="p-2 border rounded"
@@ -106,7 +110,8 @@ function AllEvents() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredEvents.map(event => (
           <div key={event.id} className="border p-4 rounded shadow">
-            <h2 className="text-xl font-bold">{event.event_name}</h2>
+            <h2 className="text-xl font-bold">{event.event_title}</h2>
+            <p>Host: {event.host_name}</p>
             <p>Date: {new Date(event.event_date).toLocaleDateString()}</p>
             <p>Category: {planNames[event.plan_id]}</p>
             <p>Payment: ₦{event.ticket_price || 'N/A'}</p>
@@ -120,7 +125,7 @@ function AllEvents() {
             <p className="mt-2">Last Updated: {new Date(event.updated_at).toLocaleString()}</p>
             
             {event.image_url && (
-              <img src={event.image_url} alt={event.event_name} className="mt-2 w-full h-40 object-cover" />
+              <img src={event.image_url} alt={event.event_title} className="mt-2 w-full h-40 object-cover" />
             )}
             
             {event.video_url && (

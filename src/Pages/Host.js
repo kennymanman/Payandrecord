@@ -310,8 +310,8 @@ const cld = new Cloudinary({
 //   };
 
 //   const handlePaymentClick = () => {
-//     if (!formData.email) {
-//       alert('Please enter your email address');
+//     if (!formData.hostEmailAddress) {
+//       alert('Please enter your email address in the Host Email Address field');
 //       return;
 //     }
 
@@ -319,7 +319,7 @@ const cld = new Cloudinary({
 
 //     const handler = window.PaystackPop.setup({
 //       key: paystackPublicKey,
-//       email: formData.email,
+//       email: formData.hostEmailAddress,
 //       amount: selectedPlanPrice * 100, // amount in kobo
 //       ref: 'ref-' + Math.floor((Math.random() * 1000000000) + 1),
 //       callback: function(response) {
@@ -913,8 +913,8 @@ export default function Host() {
   };
 
   const handlePaymentClick = () => {
-    if (!formData.email) {
-      alert('Please enter your email address');
+    if (!formData.hostEmailAddress) {
+      alert('Please enter your email address in the Host Email Address field');
       return;
     }
 
@@ -922,7 +922,7 @@ export default function Host() {
 
     const handler = window.PaystackPop.setup({
       key: paystackPublicKey,
-      email: formData.email,
+      email: formData.hostEmailAddress,
       amount: selectedPlanPrice * 100, // amount in kobo
       ref: 'ref-' + Math.floor((Math.random() * 1000000000) + 1),
       callback: function(response) {

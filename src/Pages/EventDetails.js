@@ -25,36 +25,72 @@ function EventDetails() {
 
   if (!event) return <div>Loading...</div>;
 
+  const planNames = {
+    1: 'Basic',
+    2: 'Standard',
+    3: 'Premium'
+  };
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">{event.event_name}</h1>
+      <h1 className="text-3xl font-bold mb-4">{event.event_title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <p><strong>Date:</strong> {new Date(event.event_date).toLocaleDateString()}</p>
-          <p><strong>Category:</strong> {event.plan_id === 1 ? 'Basic' : event.plan_id === 2 ? 'Standard' : 'Premium'}</p>
-          <p><strong>Payment:</strong> ₦{event.ticket_price || 'N/A'}</p>
-          <p><strong>Email:</strong> {event.email}</p>
-          <p><strong>Phone:</strong> {event.phone_number}</p>
+          <p><strong>Host Name:</strong> {event.host_name}</p>
+          <p><strong>Host Phone Number:</strong> {event.host_phone_number}</p>
+          <p><strong>Host Email Address:</strong> {event.host_email_address}</p>
+          <p><strong>Event Address:</strong> {event.event_address}</p>
+          <p><strong>Map Location:</strong> Latitude: {event.map_location_latitude}, Longitude: {event.map_location_longitude}</p>
+          <p><strong>Event Description:</strong> {event.event_description}</p>
+          <p><strong>DJ Appearance 1:</strong> {event.dj_appearance_one || 'N/A'}</p>
+          <p><strong>DJ Appearance 2:</strong> {event.dj_appearance_two || 'N/A'}</p>
+          <p><strong>DJ Appearance 3:</strong> {event.dj_appearance_three || 'N/A'}</p>
+          <p><strong>Event Rules:</strong> {event.event_rules}</p>
+          <p><strong>Category:</strong> {event.category}</p>
+          <p><strong>Country:</strong> {event.country}</p>
+          <p><strong>Plan:</strong> {planNames[event.plan_id]}</p>
           <p><strong>Edit Code:</strong> {event.edit_code}</p>
-          <p><strong>Last Updated:</strong> {event.updated_at ? new Date(event.updated_at).toLocaleString() : 'N/A'}</p>
+          <p><strong>Created At:</strong> {new Date(event.created_at).toLocaleString()}</p>
+          <p><strong>Updated At:</strong> {new Date(event.updated_at).toLocaleString()}</p>
         </div>
         <div>
-          {event.image_url && (
-            <div className="mb-4">
-              <h2 className="text-xl font-bold mb-2">Event Image</h2>
-              <img src={event.image_url} alt="Event" className="max-w-full h-auto" />
-            </div>
-          )}
-          {event.video_url && (
-            <div>
-              <h2 className="text-xl font-bold mb-2">Event Video</h2>
-              <video controls className="max-w-full h-auto">
-                <source src={event.video_url} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          )}
+          <h2 className="text-2xl font-bold mb-2">Tickets</h2>
+          {['One', 'Two', 'Three', 'Four', 'Five', 'Six'].map((num) => (
+            event[`ticket_${num.toLowerCase()}_name`] && (
+              <div key={num} className="mb-2">
+                <h3 className="font-bold">Ticket {num}</h3>
+                <p><strong>Name:</strong> {event[`ticket_${num.toLowerCase()}_name`]}</p>
+                <p><strong>Price:</strong> ₦{event[`ticket_${num.toLowerCase()}_price`]}</p>
+                <p><strong>Description:</strong> {event[`ticket_${num.toLowerCase()}_description`]}</p>
+                <p><strong>Count:</strong> {event[`ticket_${num.toLowerCase()}_count`]}</p>
+              </div>
+            )
+          ))}
         </div>
+      </div>
+      <div className="mt-4">
+        <h2 className="text-2xl font-bold mb-2">Media</h2>
+        {event.image_portrait_url && (
+          <div className="mb-4">
+            <h3 className="font-bold">Portrait Image</h3>
+            <img src={event.image_portrait_url} alt="Event Portrait" className="max-w-full h-auto" />
+          </div>
+        )}
+        {event.image_landscape_url && (
+          <div className="mb-4">
+            <h3 className="font-bold">Landscape Image</h3>
+            <img src={event.image_landscape_url} alt="Event Landscape" className="max-w-full h-auto" />
+          </div>
+        )}
+        {event.video_url && (
+          <div>
+            <h3 className="font-bold">Event Video</h3>
+            <video controls className="max-w-full h-auto">
+              <source src={event.video_url} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        )}
       </div>
     </div>
   );
